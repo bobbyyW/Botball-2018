@@ -1,12 +1,13 @@
 #!/bin/bash
 
-path="Default\ User/gcer\ 2017"
-
-if [ $# -eq 2 ]; then
-  path=$2
+if [ $# -ne 1 ] ; then
+  echo "Example:"
+  echo "cd ~/Botball-2018/Wallaby/src"
+  echo "./scripts/upload.sh Austin/Wallaby/src"
+  exit 1;
 fi
 
-scp -r . root@$1:"Documents/KISS/$path/"
+scp -r . root@192.168.125.1:"Documents/KISS/$1/"
 
 exit 0;
 
