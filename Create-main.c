@@ -27,3 +27,18 @@ void dinit() {
   printf("Finished");
   
 }
+
+int main() {
+  printf("init");
+  init();
+  
+  wait_for_light(0);
+  shut_down_in(119);
+  create_start();
+  
+  //FUNCTIONS
+  
+  printf("Dinit");
+  dinit();
+  return 0;
+}
