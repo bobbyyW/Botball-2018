@@ -21,8 +21,10 @@
 #define ARM_SERVO 1
 #define CLAW_SERVO 0
 
-#define CLAW_CLOSED 800
-#define CLAW_OPEN 450
+#define CLAW_FULL 1617
+#define CLAW_BOTGUY 1577
+#define CLAW_DISC 1481
+#define CLAW_OPEN 403
 
 #define ARM_DOWN 2000
 #define ARM_UP 200
