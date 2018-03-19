@@ -173,8 +173,8 @@ void create_off(){
 	msleep(200);
 }*/
 
-#define lcliff get_create_lcliff_amt(.002)
-#define rcliff get_create_rcliff_amt(.002)
+//#define lcliff get_create_lcliff_amt(.002)
+//#define rcliff get_create_rcliff_amt(.002)
 
 void create_lineup(){//lines up the create on a black line
 	int done = 0;
