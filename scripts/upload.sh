@@ -2,8 +2,8 @@
 
 if [ $# -ne 1 ] ; then
   echo "Example:"
-  echo "cd ~/Botball-2018/Wallaby/src"
-  echo "./scripts/upload.sh Austin/Wallaby/src"
+  echo "cd /Users/austinwang/Botball-2018/Wallaby/src"
+  echo "/Users/austinwang/Botball-2018/scripts/upload.sh Austin/Wallaby/src"
   exit 1;
 fi
 
