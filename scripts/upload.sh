@@ -7,7 +7,7 @@ if [ $# -ne 1 ] ; then
   exit 1;
 fi
 
-scp -r . root@192.168.125.1:"Documents/KISS/$1/"
+scp -r . root@192.168.125.1:"Documents/KISS/$1"
 
 exit 0;
 
