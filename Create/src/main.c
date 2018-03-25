@@ -1,10 +1,12 @@
 ///////////////////////////////////////////////////////////////
 // main.c                             //
-// For use by botball team 17-0510                           //
+// For use by botball team 18-0510                           //
 ///////////////////////////////////////////////////////////////
 
 #include <kipr/botball.h>
 #include "exmove.h"
+#include "createDrive.h"
+#include "initialDrive.h"
 
 //#define HAY_TEST // NOTE MAKE SURE THAT IF YOU ARE TESTING SOMETHING OTHER THAN HAY TO COMMENT THIS OUT
 
@@ -44,14 +46,18 @@ int main() {
   	printf("init\n");
 	init();
   
-    	wait_for_light(0);
-    	shut_down_in(119);
+    	//wait_for_light(0);
+    	//shut_down_in(119);
     	create_start();
 
 	//FUNCTIONS
+    
+    initialDrive();
 
 	printf("dinit\n");
 	dinit();
 	return 0;
-}
 
+
+  
+}

@@ -9,6 +9,13 @@
 #define get_high_byte2(a) (((a)>>8)&255)
 #define get_low_byte2(a) ((a)&255)
 
+#define openClaw 403
+
+int rf;
+int r;
+int l;
+int lf;
+
 void create_write_int(short integer)
 {
 	create_write_byte(get_high_byte2(integer));
@@ -176,7 +183,7 @@ void create_off(){
 //#define lcliff get_create_lcliff_amt(.002)
 //#define rcliff get_create_rcliff_amt(.002)
 
-void create_lineup(){//lines up the create on a black line
+/*void create_lineup(){//lines up the create on a black line
 	int done = 0;
 	float tstart = seconds();
 	while(done < 4){//WORK ON THIS
@@ -202,3 +209,5 @@ void create_lineup(){//lines up the create on a black line
 	}
 	create_stop();
 }
+*/
+
