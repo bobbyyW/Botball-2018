@@ -97,7 +97,7 @@ int main()
         	move(80,80,1); // noob
         }
     }
-    servo(2,900); // raise the claw before the noobish turn
+    servo(2,340); // raise the claw before the noobish turn
     // Turn left
     while(analog(5) > mean - error) {
     	move(25,0,1);
@@ -116,7 +116,7 @@ int main()
     servo(2,1150);
     
     // Move backward
-    move(-50,-50,2000);
+    move(-50,-50,2500);
     
     // Move right slightly so the right sensor is on white
     move(0,25,1000);
