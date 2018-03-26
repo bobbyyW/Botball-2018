@@ -2,7 +2,7 @@
 #define black 1100
 
 
-void create(){
+void getTram(){
     create_connect();
     create_full();
     int x;
