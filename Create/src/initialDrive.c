@@ -1,26 +1,26 @@
-
-
-
-
-
 #ifndef MINIFIED
 #include "kipr/botball.h"
 #include "initialDrive.h"
 #include "createDrive.h"
+#include "createDrive.c"
 #include "exmove.h"
 #endif
 
-#define black 1100
-#define white 2600
-
 void initialDrive() {    
-    create_drive_direct(-100,-200);
-    msleep(2000); // square up
+    
+    
+    int black = 1100;
+    int white;
+    
+    //start the initialdrive
+    
+    create_drive_direct(-100,-250);
+    msleep(1500); // square up
+    white = get_create_rcliff_amt();
     printf("rf: %d\n", get_create_rfcliff_amt());
-    printf("squared up\n");
+    printf("squared up\n white : %d\n", white);
     
 /*
-
     while (get_create_rfcliff_amt() > black){
         create_drive_straight(75);
         msleep(1);
@@ -36,63 +36,106 @@ void initialDrive() {
     }
 
  */
+    
+   int i;
+   for (i = 0; i < 2200; i++){
+       
+       /*
+           int value = get_create_lfcliff_amt();
+       	   if (value < black){
+               black = value;
+           }
+           */
 
-   create_drive_straight(75);
-   msleep(3000);
-
-    printf("rf: %d\n", get_create_lfcliff_amt());
+   		   create_drive_straight(40);
+   		   msleep(1);
+   }
+	int mean = (black + white)/2;
+    int error = (white - black) * 0.1;
+    printf("black: %d white : %d mean : %d error : %d \n", black, white, mean, error);
     printf("rf left black \n");
   
 
     // Rotate right slightly
-    create_spin_CW(50);
-    msleep(500);
+    create_spin_CW(150);
+    msleep(750);
     
     // value >= white > black
-    while (get_create_lfcliff_amt() > black){
-     	create_drive_straight(75);
+    while (get_create_lfcliff_amt() > white - error){
+     	create_drive_straight(100);
         msleep(1);
     }
+    
+    printf("slightly past center line");
     printf("lf: %d\n", get_create_lfcliff_amt());    
     printf("lf enter center black line\n");
-    
+
+    while (get_create_lfcliff_amt() < white - error){
+     	create_drive_straight(40);
+        msleep(1);  
+    }
+    /*
     // Rotate left slightly
-    create_spin_CCW(50);
-    msleep(500);
+    create_spin_CCW(100);
+    msleep(750);
+    
+    */
     
     // start line follow
     // r >= white > black
  
-    int mean = (black + white) / 2;
-    int error = (white - black) / 10;
     int lf = get_create_lfcliff_amt();
     printf("r: %d\n", get_create_rcliff_amt());
     printf("lf: %d\n", lf);
     printf("start line follow\n");
-    while(get_create_rcliff_amt() > black) {
-	l = get_create_lcliff_amt();
-	if (l < black){
+    
+    if (l < black + error){
 	// crossed the center line
-	create_spin_CCW(50);
-	msleep(500);
+	create_spin_CCW(100);
+	msleep(1);
    	printf(" l : %d \n", l);
-        continue;
     }
-
+    while(get_create_rcliff_amt() > black + error) {
         lf = get_create_lfcliff_amt();
-        if (lf < mean - error){
-            //on black turn left
+        if( lf > white - error) {
             create_spin_CCW(50);
-            msleep((mean - lf)/20);
-            //create_drive_direct(75,0);   
-        } else if (lf > mean + error){
-            //on white turn right
+            continue;
+    	}else if (lf < black + error){
             create_spin_CW(50);
-            msleep((lf - mean)/20);
-            //create_drive_direct(0,75);
+            continue;
+        }else{
+            create_drive_straight(90);
         }
-        create_drive_straight(75);
         msleep(1);
-        printf("lf : %d\n", lf);
     }
+    
+    printf("got to goal");
+    
+    // Henry's code
+    printf("spin\n");
+    while(get_create_lfcliff_amt() > black + error) {
+        create_spin_CW(100);
+        msleep(1);
+    }
+    
+    printf("forward until lf \n");
+    
+    int z = 0;
+    while(z < 200) {
+        int x = get_create_lfcliff_amt()- mean;
+        create_drive_direct(100+x/40, 100-x/40);
+        msleep(1);
+        z++;
+    }
+    /*
+    while(get_create_rcliff_amt() > black + error) {
+        create_drive_straight(-100);
+        msleep(1);
+    }
+    
+    */
+    create_drive_straight(-100);
+    msleep(2000);
+
+    
 }
