@@ -3,7 +3,6 @@
 #include "initialDrive.h"
 #include "createDrive.h"
 #include "createDrive.c"
-#include "exmove.h"
 #endif
 
 void initialDrive() {    
@@ -57,7 +56,7 @@ void initialDrive() {
   
 
     // Rotate right slightly
-    create_spin_CW(150);
+    create_spin_CW(120);
     msleep(750);
     
     // value >= white > black
@@ -98,10 +97,10 @@ void initialDrive() {
     while(get_create_rcliff_amt() > black + error) {
         lf = get_create_lfcliff_amt();
         if( lf > white - error) {
-            create_spin_CCW(50);
+            create_spin_CCW(75);
             continue;
     	}else if (lf < black + error){
-            create_spin_CW(50);
+            create_spin_CW(75);
             continue;
         }else{
             create_drive_straight(90);
@@ -114,7 +113,7 @@ void initialDrive() {
     // Henry's code
     printf("spin\n");
     while(get_create_lfcliff_amt() > black + error) {
-        create_spin_CW(100);
+        create_spin_CW(50);
         msleep(1);
     }
     
@@ -127,15 +126,51 @@ void initialDrive() {
         msleep(1);
         z++;
     }
-    /*
+    
     while(get_create_rcliff_amt() > black + error) {
         create_drive_straight(-100);
         msleep(1);
     }
     
-    */
-    create_drive_straight(-100);
-    msleep(2000);
+    
+    create_drive_straight(-100); // maybe use distance?? correct create pos for setup
+    msleep(1000);
+    
+    printf("get into the correct pos for setup");
+    
+    
+    motor(0,-90); // move the arm into the correct position
+    msleep(4000);
+    
+    printf("got the motor arm into pos.");
+   
+    
+    //move the arm
+    
+    //move the claw to open
+    
+    printf("move arm + open claw");
+    
+    //get into position to grab
+    
+    printf("move forward to grab");
+    
+    //close claw
+    
+    printf("grab");
+    
+    create_drive_straight(100);
+    //until in pos : probably go till hits that wall thing
+    msleep(3000);
+    
+    printf("move forward until no longer can... proceed to push to the end");
+    
+    
+    //
+    
+    
+    
+    create_stop();
 
     
 }

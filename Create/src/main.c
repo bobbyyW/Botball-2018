@@ -4,7 +4,6 @@
 ///////////////////////////////////////////////////////////////
 
 #include <kipr/botball.h>
-#include "exmove.h"
 #include "createDrive.h"
 #include "createDrive.c"
 #include "initialDrive.h"
@@ -22,11 +21,11 @@ void init() {
     	create_full();
 	printf("connected\n");
 	// light here
-    	set_servo_position(ARM_SERVO, ARM_UP);
-    	set_servo_position(CLAW_SERVO, CLAW_CLOSED);    //set starting values
+    	set_servo_position(ARM, ARM_DOWN);
+    	set_servo_position(CLAW, CLAW_CLOSE);    //set starting values
 
-  	enable_servo(ARM_SERVO);
-	enable_servo(CLAW_SERVO);
+  	enable_servo(ARM);
+	enable_servo(CLAW);
 
 }
 
@@ -44,7 +43,6 @@ void dinit() {
 
 int main() {
   
-  	printf("init\n");
 	init();
   
     	//wait_for_light(0);
@@ -53,6 +51,9 @@ int main() {
 
     
 	//FUNCTIONS
+    
+    //set_servo_position(ARM,ARM_DOWN);
+    //set_servo_position(CLAW,CLAW_CLOSE);
     
     initialDrive();
 
