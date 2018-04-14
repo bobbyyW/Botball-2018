@@ -1,23 +1,29 @@
 ///////////////////////////////////////////////////////////////
+// main.c                             //
+// For use by botball team 18-0510                           //
+///////////////////////////////////////////////////////////////
 
 #include <kipr/botball.h>
 #define ARM 0
 #define ARM_DOWN 2000
-#define ARM_BOT_DOWN 584
+#define ARM_BOT_DOWN 708
 #define BOTGUY_ARM_UP 1152
 #define ARM_UP 217
 #define ARM_PUT 488
+#define ARM_PUTTER 600
 #define ARM_TRAM 1650
-#define CLAW_MID 1000
 
 #define CLAW 1
 #define CLAW_CLOSE 100
 #define CLAW_OPEN 1471
+#define CLAW_MID 1100
 #define BOTGUY_CLOSE 219
 #define DISC_CLOSE 235
 
 #define MOTOR 0
-#define MOTOR_DOWN 70
+#define MOTOR_MOVE 750
+#define MOTOR_DOWN_POS 3900
+#define MOTOR_UP -1550
 
 
 
@@ -25,6 +31,7 @@ int rf;
 int r;
 int l;
 int lf;
+
 
 void slowServo(int servo, int goal, int milliseconds) {
     int startPos = get_servo_position(servo);
@@ -43,11 +50,14 @@ void slowServo(int servo, int goal, int milliseconds) {
 
 
 void initialDrive() {    
+
     
     
-    int black = 1100;
-    int white;
-    
+int black = 1100;
+int white = 2589;
+int mean = (black + white)/2;
+int error = (white - black) * 0.2;
+    /*
     //start the initialdrive
     
     create_drive_direct(-100,-250);
@@ -56,7 +66,7 @@ void initialDrive() {
     printf("rf: %d\n", get_create_rfcliff_amt());
     printf("squared up\n white : %d\n", white);
     
-/*
+
     while (get_create_rfcliff_amt() > black){
         create_drive_straight(75);
         msleep(1);
@@ -71,26 +81,25 @@ void initialDrive() {
         msleep(1);  
     }
 
- */
+ 
     
    int i;
    for (i = 0; i < 1800; i++){
        
-       /*
+       
            int value = get_create_lfcliff_amt();
        	   if (value < black){
                black = value;
            }
-           */
+           
 
    		   create_drive_straight(40);
    		   msleep(1);
    }
-	int mean = (black + white)/2;
-    int error = (white - black) * 0.2;
+   */
     printf("black: %d white : %d mean : %d error : %d \n", black, white, mean, error);
     printf("rf left black \n");
-  
+  /*
 
     // Rotate right slightly
     create_spin_CW(140);
@@ -106,13 +115,13 @@ void initialDrive() {
     printf("lf: %d\n", get_create_lfcliff_amt());    
     printf("lf enter center black line\n");
 
-    /*
-    while (get_create_lfcliff_amt() < white - error){
+    
+    whlie (get_create_lfcliff_amt() < white - error){
      	create_drive_straight(40);
         msleep(1);  
     }
     
-    */
+    
     
     create_drive_straight(100);
     msleep(500);
@@ -142,7 +151,7 @@ void initialDrive() {
         msleep(1);
     }
     
-    /*
+    
     
     if (l < black + error){
 	// crossed the center line
@@ -168,30 +177,7 @@ void initialDrive() {
     
     
     printf("got to goal");
-    
-    /*
-    
-    // Henry's code
-    printf("spin\n");
-    int q;
-    for (q = 0; q < 3; q ++){
-    while(get_create_lfcliff_amt() > black + error) {
-        create_spin_CW(50);
-        msleep(1);
-    }
-    
-    //UNTESTED
-    */
-    create_spin_CCW(100);
-    msleep(500);
-    
-    while (get_create_rcliff_amt() > mean && get_create_lcliff_amt() > mean){
-        create_spin_CCW(25);
-        msleep(1);
-    }
-    
-                   
-    /*
+   /*
     create_spin_CW(100);
     msleep(500);
     int p;
@@ -282,6 +268,42 @@ void initialDrive() {
     
 }
 
+void GetBotguy(){
+int black = 1100;
+int white = 2589;
+int mean = (black + white)/2;
+int error = (white - black) * 0.2;
+    
+    printf("pos");
+    move_to_position(MOTOR,MOTOR_MOVE,MOTOR_DOWN_POS);
+    block_motor_done(MOTOR);
+    slowServo(ARM,ARM_BOT_DOWN,1500);
+    create_drive_straight(-100);
+    msleep(125);
+    slowServo(CLAW,CLAW_MID,1000);
+    slowServo(CLAW,BOTGUY_CLOSE,5000);
+    
+    while (get_create_lcliff_amt() > black + error){
+        create_drive_straight(100);
+        msleep(1);
+    }
+    create_drive_straight(200);
+    msleep(1000);
+    create_stop();
+    printf("got the guy, out of the box");
+    move_to_position(MOTOR,MOTOR_MOVE-150,MOTOR_UP);
+    block_motor_done(MOTOR);
+    printf("finished getting arm into pos to go backwards then drop");
+    slowServo(ARM,ARM_UP,1000);
+    create_drive_straight(-100);
+    msleep(2750);
+    create_stop();
+    slowServo(ARM,ARM_PUT,500);
+    slowServo(ARM,ARM_PUTTER,500);
+    //slowServo(CLAW,CLAW_OPEN,500);
+    printf("put botguy in tram");
+}
+
 void init() {
 	printf("Conecting to Create\n");
 	// TODO Add light activate
@@ -290,10 +312,12 @@ void init() {
     	create_full();
 	printf("connected\n");
     
+    clear_motor_position_counter(MOTOR);
   	enable_servo(ARM);
 	enable_servo(CLAW);
 	// light here
-	slowServo(ARM,0,3000);
+	slowServo(ARM,ARM_UP,1000);
+    slowServo(CLAW,CLAW_CLOSE,500);
     //set_servo_position(CLAW, CLAW_CLOSE);    //set starting values
 
 
