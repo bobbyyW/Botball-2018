@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#
+# if [[ $# -eq 0 ]] ; then
+#     echo "Usage: $0 user project"
+#     exit 0
+# fi
+
+
+scp -r include/ "root@192.168.125.1:~/Documents/KISS/a/b"
+scp -r src/ "root@192.168.125.1:~/Documents/KISS/a/b/"
+say UPLOAD UPLOAD UPLOAD
+# ssh root@192.168.125.1 "gcc -I/home/root/Documents/KISS/a/b/include -I/usr/local/include/include -Wall /home/root/Documents/KISS/a/b/src/main.c /harrogate/apps/compiler/compilation-environments/c/_init_helper.c -L/usr/local/lib -lwallaby -lm -o /home/root/Documents/KISS/a/b/bin/botball_user_program"

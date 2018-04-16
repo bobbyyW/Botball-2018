@@ -1,0 +1,24 @@
+{
+	"target": "out/main.c",
+	"head": [
+		"#include <kipr/botball.h>",
+		"#define MINIFIED"
+	],
+	"__comment__": "Declarations are placed in order of concatination",
+	"declarations": [
+		"src/createDrive.h",
+		"src/exmove.h",
+		"src/initialDrive.h",
+		"src/blueCow.h",
+		"src/farmHayBales.h"
+	],
+	"__0comment0__": "Sources are placed in order of concatination",
+	"sources": [
+		"src/createDrive.c",
+		"src/exmove.c",
+		"src/initialDrive.c",
+		"src/blueCow.c",
+		"src/farmHayBales.c",
+		"src/main.c"
+	]
+}
