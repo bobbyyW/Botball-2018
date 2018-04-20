@@ -6,52 +6,42 @@
 #include <kipr/botball.h>
 #define ARM 0
 #define ARM_DOWN 2000
-<<<<<<< HEAD
-#define ARM_BOT_DOWN 584
-#define BOTGUY_ARM_UP 1152
-#define ARM_UP 217
-#define ARM_PUT 488
-#define ARM_TRAM 1650
-#define CLAW_MID 1000
-=======
 #define ARM_BOT_DOWN 708
-#define BOTGUY_ARM_UP 1152
+#define BOTGUY_ARM_UP 1450
 #define ARM_UP 217
 #define ARM_PUT 488
 #define ARM_PUTTER 600
 #define ARM_TRAM 1650
->>>>>>> 652848aecc89a58dcf26fc1675a8069fe792ac40
 
 #define CLAW 1
 #define CLAW_CLOSE 100
 #define CLAW_OPEN 1471
-<<<<<<< HEAD
-=======
 #define CLAW_MID 1100
->>>>>>> 652848aecc89a58dcf26fc1675a8069fe792ac40
 #define BOTGUY_CLOSE 219
 #define DISC_CLOSE 235
 
+#define MOTOR_ARM 0
 #define MOTOR 0
-<<<<<<< HEAD
-#define MOTOR_DOWN 70
-=======
 #define MOTOR_MOVE 750
 #define MOTOR_DOWN_POS 3900
 #define MOTOR_UP -1550
->>>>>>> 652848aecc89a58dcf26fc1675a8069fe792ac40
+#define MOTOR_ALL -1626
 
+#define ARM_REST -1000
+#define CLAW_REST 100
+#define WRIST_REST 2000
 
+int black = 1100;
+int white = 2589;
 
 int rf;
 int r;
 int l;
 int lf;
 
-<<<<<<< HEAD
-=======
+// Operator position: the higher positioned black ring is on the left hand. the side close to the operator is called
+// bottom side. The long black line that extends away from the operator is called vertical line.
 
->>>>>>> 652848aecc89a58dcf26fc1675a8069fe792ac40
 void slowServo(int servo, int goal, int milliseconds) {
     int startPos = get_servo_position(servo);
     int goalRelative = goal - startPos;
@@ -67,489 +57,253 @@ void slowServo(int servo, int goal, int milliseconds) {
     set_servo_position(servo, goal);
 }
 
-
 void initialDrive() {    
-<<<<<<< HEAD
-    
-    
-    int black = 1100;
-    int white;
-    
-=======
 
+#define armDisk 1200
+#define armUp 700
+#define clawDisk 300
+#define clawOpen 1471
+#define arm 0
+#define claw 1
+        
+    // move the arm to perpendicular position
+    move_to_position(MOTOR,600,0);
+    block_motor_done(MOTOR);
     
-    
-int black = 1100;
-int white = 2589;
-int mean = (black + white)/2;
-int error = (white - black) * 0.2;
-    /*
->>>>>>> 652848aecc89a58dcf26fc1675a8069fe792ac40
-    //start the initialdrive
-    
+    // square up on the bottom side
     create_drive_direct(-100,-250);
-    msleep(1500); // square up
+    msleep(2000);
     white = get_create_rcliff_amt();
     printf("rf: %d\n", get_create_rfcliff_amt());
     printf("squared up\n white : %d\n", white);
     
-<<<<<<< HEAD
-/*
-=======
-
->>>>>>> 652848aecc89a58dcf26fc1675a8069fe792ac40
-    while (get_create_rfcliff_amt() > black){
-        create_drive_straight(75);
-        msleep(1);
-    }
-
-    printf("rf: %d\n", get_create_rfcliff_amt());
-    printf("rf enter black \n");
-    
-    // value <= black < white
-    while (get_create_rfcliff_amt() < white){
-     	create_drive_straight(20);
-        msleep(1);  
-    }
-<<<<<<< HEAD
-
- */
-    
-   int i;
-   for (i = 0; i < 1800; i++){
-       
-       /*
-           int value = get_create_lfcliff_amt();
-       	   if (value < black){
-               black = value;
-           }
-           */
-
-   		   create_drive_straight(40);
-   		   msleep(1);
-   }
-	int mean = (black + white)/2;
-    int error = (white - black) * 0.2;
-    printf("black: %d white : %d mean : %d error : %d \n", black, white, mean, error);
-    printf("rf left black \n");
-  
-
-    // Rotate right slightly
-    create_spin_CW(140);
-    msleep(750);
-    
-    // value >= white > black
-    while (get_create_lfcliff_amt() > white - error){
-     	create_drive_straight(100);
-        msleep(1);
-    }
-    
-    printf("slightly past center line");
-    printf("lf: %d\n", get_create_lfcliff_amt());    
-    printf("lf enter center black line\n");
-
-    /*
-    while (get_create_lfcliff_amt() < white - error){
-     	create_drive_straight(40);
-        msleep(1);  
-    }
-    
-    */
-    
+    // square up on the left side
     create_drive_straight(100);
     msleep(500);
-    
-        
+    create_drive_direct(-100,100);
+    msleep(1600);
     create_drive_straight(100);
-    msleep(250);
+    msleep(3000);
+    printf("square");
     
-    // Rotate left slightly
-    create_spin_CCW(140);
-    msleep(750);
+    // move towards the frisbee by moving backward since the arm is facing the back
+    create_drive_straight(-100);
+    msleep(2750);
 
+    // move while both left and right sensors are on white
+    // todo: remove the hardcoded 900
+     while(get_create_lcliff_amt() > black+900 && get_create_rcliff_amt() > black+900) {
+        create_drive_direct(-50, -50);
+        msleep(1);
+    }
+
+    // move past the first black line
+    create_drive_straight(-50);
+    msleep(1500);
     
+    // move while both left and right sensors are on white
+    // todo: remove the hardcoded 900
+    while(get_create_lcliff_amt() > black+900 && get_create_rcliff_amt() > black+900) {
+        create_drive_direct(-50, -50);
+        msleep(1);
+    }
     
+    // square up on the second black line
+    if(get_create_lcliff_amt() > black+900) {
+        while(get_create_lcliff_amt() > black+900) {
+            create_drive_direct(-25, 5);
+        }
+    } else {
+        while(get_create_rcliff_amt() > black+900) {
+            create_drive_direct(5, -25);
+        }
+    }
     
-    // start line follow
-    // r >= white > black
- 
-    int lf = get_create_lfcliff_amt();
-    printf("r: %d\n", get_create_rcliff_amt());
-    printf("lf: %d\n", lf);
-    printf("start line follow\n");
+    create_stop();
+    msleep(300);
     
-    while(get_create_rcliff_amt() > black + error*2) {
-        int x = get_create_lfcliff_amt() - mean;
+    // Raise arm
+    move_to_position(MOTOR,750,400);
+    block_motor_done(0);
+    // Open claw
+    // todo: change to slowServo
+    set_servo_position(claw, clawOpen+400);
+    msleep(300);
+    // Move wrist to position
+    set_servo_position(arm, armDisk);//SET POSITIONS
+    msleep(300);
+    
+    // Move towards frisbee
+    create_drive_direct(-100, -100);
+    msleep(1600);
+    create_stop();
+    msleep(1000);
+    
+    // Close claw
+    slowServo(claw, clawDisk, 1500);
+    msleep(300);
+    // Raise wrist
+    slowServo(arm, armUp, 1500);
+    msleep(300);
+    
+    // Move while left sensor is on white
+    // todo: remove hardcoded 400
+    while(get_create_lcliff_amt() > black+400) {
+        create_drive_direct(100, 100);
+        msleep(1);
+    }
+    create_stop();
+    
+    // Move past the black line
+    create_drive_direct(100, 100);
+    msleep(450);
+    // Turn right 90 degree to align with the black line
+    create_spin_CW(100);
+    msleep(1600);
+    
+    // Follow vertical line using left front sensor until right sensor is on horizontal black line.
+    while(get_create_rcliff_amt() > black + 400) {
+    	int x = get_create_lfcliff_amt() - (black+white)/2;
         create_drive_direct(100+x/18, 100-x/18);
         msleep(1);
     }
+    create_stop();
+    msleep(300);
     
-    /*
+    // Raise arm
+    move_to_position(0,750,-1500);
+    block_motor_done(0);
+    msleep(300);
     
-    if (l < black + error){
-	// crossed the center line
-	create_spin_CCW(100);
-	msleep(1);
-   	printf(" l : %d \n", l);
-    }
-    while(get_create_rcliff_amt() > black + error) {
-        lf = get_create_lfcliff_amt();
-        if( lf > white - error) {
-            create_spin_CCW(75);
-            continue;
-    	}else if (lf < black + error){
-            create_spin_CW(75);
-            continue;
-        }else{
-            create_drive_straight(90);
-        }
-        msleep(1);
-    }
-    */
-    
-    
-    
-    printf("got to goal");
-    
-    /*
-    
-    // Henry's code
-    printf("spin\n");
-    int q;
-    for (q = 0; q < 3; q ++){
-    while(get_create_lfcliff_amt() > black + error) {
-        create_spin_CW(50);
-        msleep(1);
-    }
-    
-    //UNTESTED
-    */
-    create_spin_CCW(100);
-    msleep(500);
-    
-    while (get_create_rcliff_amt() > mean && get_create_lcliff_amt() > mean){
-        create_spin_CCW(25);
-        msleep(1);
-    }
-    
-                   
-    /*
+    // Turn right so that the left front sensor is not on black.
     create_spin_CW(100);
-    msleep(500);
-    int p;
-    for (p = 0; p<2;p++){
-        
-    create_spin_CW(50);
-    msleep(500);
-    
-    while(get_create_rfcliff_amt() > black + error) {
-        create_spin_CW(50);
-        msleep(1);
-    	}
-    }
-    create_spin_CCW(100);
     msleep(1000);
     
-
-
-    //GET TO THE POSITION TO GRAB THE BOTGUY
-    //FOR NO
-    
-    //move down the MOTOR to starting pos
-    //get both the claw and arm into pos
-    //move forward to grab it
-    //close claw
-    //move back
-    //move up the arm MOTOR
-    
-    
-    //TURN 180 DEGREES 
-    
-    //Put Botguy in the Tram
-    
-    
-    printf("forward until lf \n");
-    
-    int z = 0;
-    while(z < 200) {
-        int x = get_create_lfcliff_amt()- mean;
-        create_drive_direct(100+x/20, 100-x/20);
-        msleep(1);
-        z++;
+    // Square up until the left front sensor is on horizontal black line.
+   	while(get_create_lfcliff_amt() > black + 200){
+        create_spin_CW(100);
+    	msleep(1);
     }
     
+    // Move towards the tram
+    create_drive_straight(-100);
+    msleep(900);
+    create_stop();
     
-    
-    
-    //START TO GET THE TRAM
-    
-    while(get_create_rcliff_amt() > black + error * 2) {
-        create_drive_straight(-100);
-        msleep(1);
-    }
-    
-    create_drive_straight(-100); // maybe use distance?? correct create pos for setup
-    msleep(1000);
-    
-    printf("get into the correct pos for setup");
-    
-    
-    motor(0,-90); // move the arm into the correct position
-    msleep(4000);
-    
-    printf("got the motor arm into pos.");
-   
-    
-    //move the arm
-    
-    //move the claw to open
-    
-    printf("move arm + open claw");
-    
-    //get into position to grab
-    
-    printf("move forward to grab");
-    
-    //close claw
-    
-    printf("grab");
-    
-    create_drive_straight(100);
-    //until in pos : probably go till hits that wall thing
-    msleep(3000);
-    
-    printf("move forward until no longer can... proceed to push to the end");
-    */
-
-    
-}
-
-=======
-
- 
-    
-   int i;
-   for (i = 0; i < 1800; i++){
-       
-       
-           int value = get_create_lfcliff_amt();
-       	   if (value < black){
-               black = value;
-           }
-           
-
-   		   create_drive_straight(40);
-   		   msleep(1);
-   }
-   */
-    printf("black: %d white : %d mean : %d error : %d \n", black, white, mean, error);
-    printf("rf left black \n");
-  /*
-
-    // Rotate right slightly
-    create_spin_CW(140);
-    msleep(750);
-    
-    // value >= white > black
-    while (get_create_lfcliff_amt() > white - error){
-     	create_drive_straight(100);
-        msleep(1);
-    }
-    
-    printf("slightly past center line");
-    printf("lf: %d\n", get_create_lfcliff_amt());    
-    printf("lf enter center black line\n");
-
-    
-    whlie (get_create_lfcliff_amt() < white - error){
-     	create_drive_straight(40);
-        msleep(1);  
-    }
-    
-    
-    
-    create_drive_straight(100);
+    // Lower the wrist
+    set_servo_position(arm, 1000);
     msleep(500);
-    
-        
-    create_drive_straight(100);
-    msleep(250);
-    
-    // Rotate left slightly
-    create_spin_CCW(140);
-    msleep(750);
-
-    
-    
-    
-    // start line follow
-    // r >= white > black
- 
-    int lf = get_create_lfcliff_amt();
-    printf("r: %d\n", get_create_rcliff_amt());
-    printf("lf: %d\n", lf);
-    printf("start line follow\n");
-    
-    while(get_create_rcliff_amt() > black + error*2) {
-        int x = get_create_lfcliff_amt() - mean;
-        create_drive_direct(100+x/18, 100-x/18);
-        msleep(1);
-    }
-    
-    
-    
-    if (l < black + error){
-	// crossed the center line
-	create_spin_CCW(100);
-	msleep(1);
-   	printf(" l : %d \n", l);
-    }
-    while(get_create_rcliff_amt() > black + error) {
-        lf = get_create_lfcliff_amt();
-        if( lf > white - error) {
-            create_spin_CCW(75);
-            continue;
-    	}else if (lf < black + error){
-            create_spin_CW(75);
-            continue;
-        }else{
-            create_drive_straight(90);
-        }
-        msleep(1);
-    }
-    */
-    
-    
-    
-    printf("got to goal");
-   /*
-    create_spin_CW(100);
+    // Open claw to drop the frisbee into the tram
+    set_servo_position(claw, clawOpen);
     msleep(500);
-    int p;
-    for (p = 0; p<2;p++){
-        
-    create_spin_CW(50);
-    msleep(500);
-    
-    while(get_create_rfcliff_amt() > black + error) {
-        create_spin_CW(50);
-        msleep(1);
-    	}
-    }
-    create_spin_CCW(100);
-    msleep(1000);
-    
-
-
-    //GET TO THE POSITION TO GRAB THE BOTGUY
-    //FOR NO
-    
-    //move down the MOTOR to starting pos
-    //get both the claw and arm into pos
-    //move forward to grab it
-    //close claw
-    //move back
-    //move up the arm MOTOR
-    
-    
-    //TURN 180 DEGREES 
-    
-    //Put Botguy in the Tram
-    
-    
-    printf("forward until lf \n");
-    
-    int z = 0;
-    while(z < 200) {
-        int x = get_create_lfcliff_amt()- mean;
-        create_drive_direct(100+x/20, 100-x/20);
-        msleep(1);
-        z++;
-    }
-    
-    
-    
-    
-    //START TO GET THE TRAM
-    
-    while(get_create_rcliff_amt() > black + error * 2) {
-        create_drive_straight(-100);
-        msleep(1);
-    }
-    
-    create_drive_straight(-100); // maybe use distance?? correct create pos for setup
-    msleep(1000);
-    
-    printf("get into the correct pos for setup");
-    
-    
-    motor(0,-90); // move the arm into the correct position
-    msleep(4000);
-    
-    printf("got the motor arm into pos.");
-   
-    
-    //move the arm
-    
-    //move the claw to open
-    
-    printf("move arm + open claw");
-    
-    //get into position to grab
-    
-    printf("move forward to grab");
-    
-    //close claw
-    
-    printf("grab");
-    
-    create_drive_straight(100);
-    //until in pos : probably go till hits that wall thing
-    msleep(3000);
-    
-    printf("move forward until no longer can... proceed to push to the end");
-    */
-
-    
 }
 
 void GetBotguy(){
-int black = 1100;
-int white = 2589;
-int mean = (black + white)/2;
-int error = (white - black) * 0.2;
+    //start with the back facing botguy
+    printf("GetBotguy\n");
     
-    printf("pos");
-    move_to_position(MOTOR,MOTOR_MOVE,MOTOR_DOWN_POS);
-    block_motor_done(MOTOR);
-    slowServo(ARM,ARM_BOT_DOWN,1500);
-    create_drive_straight(-100);
-    msleep(125);
-    slowServo(CLAW,CLAW_MID,1000);
-    slowServo(CLAW,BOTGUY_CLOSE,5000);
-    
-    while (get_create_lcliff_amt() > black + error){
-        create_drive_straight(100);
+    // Move whilte both left and right sensors are on white
+    while(get_create_lcliff_amt() > black+900 && get_create_rcliff_amt() > black+900) {
+        create_drive_direct(50, 60);
         msleep(1);
     }
-    create_drive_straight(200);
+    
+    // Square up on vertical black line
+    // todo: make it a function
+    if(get_create_lcliff_amt() > black+900) {
+        while(get_create_lcliff_amt() > black+900) {
+            create_drive_direct(50, -5);
+        }
+    } else {
+        while(get_create_rcliff_amt() > black+900) {
+            create_drive_direct(-5, 50);
+        }
+    }
+    
+    // Turn 180 degree
+    create_drive_direct(100,-100);
+    msleep(3200);
+    printf("spun");
+
+    // Move away from botguy
+    create_drive_straight(100);
     msleep(1000);
     create_stop();
-    printf("got the guy, out of the box");
-    move_to_position(MOTOR,MOTOR_MOVE-150,MOTOR_UP);
-    block_motor_done(MOTOR);
-    printf("finished getting arm into pos to go backwards then drop");
-    slowServo(ARM,ARM_UP,1000);
+    
+    // Close claw
+    slowServo(claw,CLAW_CLOSE,500);
+    // Lower arm
+    move_to_position(MOTOR_ARM,MOTOR_MOVE,MOTOR_DOWN_POS);
+    block_motor_done(MOTOR_ARM);
+    // Raise wrist
+    slowServo(ARM,ARM_BOT_DOWN,1500);
+    
+    // Move into box 
     create_drive_straight(-100);
-    msleep(2750);
+    msleep(3000);
     create_stop();
+    
+    // Open claw
+    slowServo(CLAW,CLAW_MID,1000);
+    // Move towards botguy
+    create_drive_straight(-100);
+    msleep(500);
+    // Grab botguy
+    slowServo(CLAW,BOTGUY_CLOSE,5000);
+    
+    // Move back while both left and right sensors are on white
+    // todo: make a function
+    while(get_create_lcliff_amt() > black+900 && get_create_rcliff_amt() > black+900) {
+        create_drive_direct(50, 50);
+        msleep(1);
+    }
+
+    // Move back a bit more so that there is room to raise arm
+    create_drive_straight(100);
+    msleep(1500);
+    create_stop();
+    printf("got the guy, out of the box");
+    
+    // Raise arm
+    move_to_position(MOTOR,MOTOR_MOVE-150,MOTOR_UP);
+    block_motor_done(MOTOR_ARM);
+    printf("finished getting arm into pos to go backwards then drop");
+    // Raise wrist
+    slowServo(ARM,ARM_UP,1000);
+    
+    // Turn 180 degree
+    create_drive_direct(100,-100);
+    msleep(3200);
+    
+    // Move towards the tram whilte both left and right sensors are on white
+    while(get_create_lcliff_amt() > black+900 && get_create_rcliff_amt() > black+900) {
+        create_drive_direct(50, 50);
+        msleep(1);
+    }
+    // Square up on vertical line
+    if(get_create_lcliff_amt() > black+900) {
+        while(get_create_lcliff_amt() > black+900) {
+            create_drive_direct(50, -5);
+        }
+    } else {
+        while(get_create_rcliff_amt() > black+900) {
+            create_drive_direct(-5, 50);
+        }
+    }
+    
+    // Move away from tram slightly
+    create_drive_straight(-50);
+    msleep(750);
+    create_stop();
+    // Put the botguy into the tram!
     slowServo(ARM,ARM_PUT,500);
     slowServo(ARM,ARM_PUTTER,500);
+    slowServo(CLAW,CLAW_MID,500);
+
     //slowServo(CLAW,CLAW_OPEN,500);
     printf("put botguy in tram");
 }
 
->>>>>>> 652848aecc89a58dcf26fc1675a8069fe792ac40
 void init() {
 	printf("Conecting to Create\n");
 	// TODO Add light activate
@@ -558,19 +312,12 @@ void init() {
     	create_full();
 	printf("connected\n");
     
-<<<<<<< HEAD
-  	enable_servo(ARM);
-	enable_servo(CLAW);
-	// light here
-	slowServo(ARM,0,3000);
-=======
-    clear_motor_position_counter(MOTOR);
   	enable_servo(ARM);
 	enable_servo(CLAW);
 	// light here
 	slowServo(ARM,ARM_UP,1000);
     slowServo(CLAW,CLAW_CLOSE,500);
->>>>>>> 652848aecc89a58dcf26fc1675a8069fe792ac40
+    
     //set_servo_position(CLAW, CLAW_CLOSE);    //set starting values
 
 
@@ -603,7 +350,9 @@ int main() {
     //set_servo_position(CLAW,CLAW_CLOSE);
     
     initialDrive();
-
+	GetBotguy();
+    
+    
 	printf("dinit\n");
 	dinit();
 	return 0;
